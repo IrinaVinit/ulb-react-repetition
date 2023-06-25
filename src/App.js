@@ -3,39 +3,54 @@ import React, { useRef, useState } from "react";
 import "./app.css";
 // import PostItem from "./components/PostItem";
 import PostList from "./components/PostList";
-import MyButton from "./components/UI/button/MyButton";
-import MyInput from "./components/UI/input/MyInput";
+import PostForm from "./components/PostForm";
+import MySelect from "./components/UI/select/MySelect";
 
 function App() {
   const [posts, setPosts] = useState([
-    { id: 1, title: "Js1", body: "descr" },
-    { id: 2, title: "Js2", body: "descr" },
-    { id: 3, title: "Js3", body: "descr" },
-    { id: 4, title: "Js4", body: "descr" },
+    { id: 1, title: "iii", body: "op" },
+    { id: 2, title: "hhh", body: "dwe" },
+    { id: 3, title: "rrr", body: "nh" },
+    { id: 4, title: "nnn", body: "drt" },
   ]);
+const [selectedSort, setSelectedSort] = useState('');
 
-  const [title, setTitle] = useState("");
-const inputRef = useRef();
-
-
-  const addNewPost = (e) => {
-    e.preventDefault();
-    console.log(inputRef.current.value);
+  const createPost = (newPost) => {
+    setPosts([...posts, newPost]);
   };
+  // получаем пост из дочернего компонента
+  const removePost = (post) => {
+    setPosts(posts.filter((p) => p.id !== post.id));
+  };
+
+const sortPosts = (sortValue) => {
+  setSelectedSort(sortValue);
+  console.log(sortValue);
+  setPosts([...posts].sort((a,  b) => a[sortValue].localeCompare(b[sortValue])))
+}
 
   return (
     <div className="App">
-      <form>
-        <MyInput type="text" placeholder="Название" value={title} onChange={e => setTitle(e.target.value)}/>
-        {/* неуправляемый компонент - напрямую манипулирует дом деревом */}
-        <MyInput ref={inputRef} type="text" placeholder="Описание" />
-        {/* <input ref={inputRef} type="text"></input> */}
-        <MyButton onClick={addNewPost}>Создать пост</MyButton>
-      </form>
-      <PostList posts={posts} title="Список постов 1" />
+      <PostForm create={createPost} />
+      <hr style={{margin: '15px'}}></hr>
+<div>
+ <MySelect 
+ value={selectedSort}
+ onChange={sortPosts}
+ defaultValue="Сортировка по" options = {[
+  {value: 'title', name: 'По названию'},
+  {value: 'body', name: 'По описанию'}
+  
+  ]}/>
+</div>
+
+      {posts.length ? (
+        <PostList remove={removePost} posts={posts} title="Список постов 1" />
+      ) : (
+        <h1 style={{ textAlign: "center" }}>Посты не найдены!</h1>
+      )}
     </div>
   );
 }
 
 export default App;
-

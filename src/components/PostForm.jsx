@@ -2,7 +2,7 @@ import MyButton from "./UI/button/MyButton";
 import { useState } from "react";
 import MyInput from "./UI/input/MyInput";
 
-function PostForm({ create }) {
+function PostForm({ createCb }) {
   const [post, setPost] = useState({ title: "", body: "" });
 
   const addNewPost = (e) => {
@@ -12,7 +12,7 @@ function PostForm({ create }) {
       id: Date.now(),
     };
     console.log(newPost);
-    create(newPost);
+    createCb(newPost);
     setPost({ title: "", body: "" });
   };
 

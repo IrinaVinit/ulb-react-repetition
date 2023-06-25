@@ -1,10 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 //import Counter from "./components/Counter";
 import "./app.css";
 // import PostItem from "./components/PostItem";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
 import MySelect from "./components/UI/select/MySelect";
+import MyInput from "./components/UI/input/MyInput";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -13,8 +14,16 @@ function App() {
     { id: 3, title: "rrr", body: "nh" },
     { id: 4, title: "nnn", body: "drt" },
   ]);
-const [selectedSort, setSelectedSort] = useState('');
+  const [selectedSort, setSelectedSort] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
+    const sortedPosts = useMemo(() => {
+    console.log("Отработала");
+    if (selectedSort) {
+      return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]));
+    }
+    return posts;
+  }, [selectedSort, posts]);
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
   };
@@ -23,29 +32,33 @@ const [selectedSort, setSelectedSort] = useState('');
     setPosts(posts.filter((p) => p.id !== post.id));
   };
 
-const sortPosts = (sortValue) => {
-  setSelectedSort(sortValue);
-  console.log(sortValue);
-  setPosts([...posts].sort((a,  b) => a[sortValue].localeCompare(b[sortValue])))
-}
+  const sortPosts = (sortValue) => {
+    setSelectedSort(sortValue);
+  };
 
   return (
     <div className="App">
-      <PostForm create={createPost} />
-      <hr style={{margin: '15px'}}></hr>
-<div>
- <MySelect 
- value={selectedSort}
- onChange={sortPosts}
- defaultValue="Сортировка по" options = {[
-  {value: 'title', name: 'По названию'},
-  {value: 'body', name: 'По описанию'}
-  
-  ]}/>
-</div>
+      <PostForm createCb={createPost} />
+      <hr style={{ margin: "15px" }}></hr>
+      <div>
+        <MyInput
+          placeholder="Поиск..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <MySelect
+          value={selectedSort}
+          onChange={sortPosts}
+          defaultValue="Сортировка по"
+          options={[
+            { value: "title", name: "По названию" },
+            { value: "body", name: "По описанию" },
+          ]}
+        />
+      </div>
 
       {posts.length ? (
-        <PostList remove={removePost} posts={posts} title="Список постов 1" />
+        <PostList removeCb={removePost} posts={sortedPosts} title="Список постов 1" />
       ) : (
         <h1 style={{ textAlign: "center" }}>Посты не найдены!</h1>
       )}

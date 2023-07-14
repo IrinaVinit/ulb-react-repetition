@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 //import Counter from "./components/Counter";
 import "./app.css";
 // import PostItem from "./components/PostItem";
@@ -6,24 +6,40 @@ import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
 import MySelect from "./components/UI/select/MySelect";
 import MyInput from "./components/UI/input/MyInput";
+import PostFilter from "./components/PostFilter";
+import MyModal from "./components/UI/modal/MyModal";
 
 function App() {
+  // посты с сервера
   const [posts, setPosts] = useState([
     { id: 1, title: "iii", body: "op" },
     { id: 2, title: "hhh", body: "dwe" },
     { id: 3, title: "rrr", body: "nh" },
     { id: 4, title: "nnn", body: "drt" },
   ]);
-  const [selectedSort, setSelectedSort] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+//   // выбранный способ сортировки постов
+//   const [selectedSort, setSelectedSort] = useState("");
+// // содержание поисковой строки
+//   const [searchQuery, setSearchQuery] = useState("");
 
+
+const [filter, setFilter] = useState({sort: '', query: ''})
+
+
+  // отсортированные посты
     const sortedPosts = useMemo(() => {
     console.log("Отработала");
-    if (selectedSort) {
-      return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]));
+    if (filter.sort) {
+      return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]));
     }
     return posts;
-  }, [selectedSort, posts]);
+  }, [filter.sort, posts]);
+  
+  const sortedAndSearchedPosts = useMemo(() => {
+return sortedPosts.filter(post => post[filter.sort]?.toLowerCase().includes(filter.query.toLowerCase()))
+  }, [filter.query, sortedPosts])
+  
+  
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
   };
@@ -32,36 +48,18 @@ function App() {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
 
-  const sortPosts = (sortValue) => {
-    setSelectedSort(sortValue);
-  };
+  // const sortPosts = (sortValue) => {
+  //   setSelectedSort(sortValue);
+  // };
 
   return (
     <div className="App">
+      <MyModal>
       <PostForm createCb={createPost} />
+      </MyModal>
       <hr style={{ margin: "15px" }}></hr>
-      <div>
-        <MyInput
-          placeholder="Поиск..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <MySelect
-          value={selectedSort}
-          onChange={sortPosts}
-          defaultValue="Сортировка по"
-          options={[
-            { value: "title", name: "По названию" },
-            { value: "body", name: "По описанию" },
-          ]}
-        />
-      </div>
-
-      {posts.length ? (
-        <PostList removeCb={removePost} posts={sortedPosts} title="Список постов 1" />
-      ) : (
-        <h1 style={{ textAlign: "center" }}>Посты не найдены!</h1>
-      )}
+      <PostFilter filter={filter} setFilter={setFilter}/>
+      <PostList removeCb={removePost} posts={sortedAndSearchedPosts} title="Список постов 1" />
     </div>
   );
 }

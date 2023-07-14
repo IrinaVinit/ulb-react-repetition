@@ -8,6 +8,7 @@ import MySelect from "./components/UI/select/MySelect";
 import MyInput from "./components/UI/input/MyInput";
 import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/modal/MyModal";
+import MyButton from "./components/UI/button/MyButton";
 
 function App() {
   // посты с сервера
@@ -17,31 +18,35 @@ function App() {
     { id: 3, title: "rrr", body: "nh" },
     { id: 4, title: "nnn", body: "drt" },
   ]);
-//   // выбранный способ сортировки постов
-//   const [selectedSort, setSelectedSort] = useState("");
-// // содержание поисковой строки
-//   const [searchQuery, setSearchQuery] = useState("");
+  //   // выбранный способ сортировки постов
+  //   const [selectedSort, setSelectedSort] = useState("");
+  // // содержание поисковой строки
+  //   const [searchQuery, setSearchQuery] = useState("");
 
-
-const [filter, setFilter] = useState({sort: '', query: ''})
-
+  const [filter, setFilter] = useState({ sort: "", query: "" });
+  const [modal, setModal] = useState(false);
 
   // отсортированные посты
-    const sortedPosts = useMemo(() => {
+  const sortedPosts = useMemo(() => {
     console.log("Отработала");
     if (filter.sort) {
       return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]));
     }
+
     return posts;
   }, [filter.sort, posts]);
-  
+
   const sortedAndSearchedPosts = useMemo(() => {
-return sortedPosts.filter(post => post[filter.sort]?.toLowerCase().includes(filter.query.toLowerCase()))
-  }, [filter.query, sortedPosts])
-  
-  
+    return sortedPosts.filter((post) =>
+      post[filter.sort]?.toLowerCase().includes(filter.query.toLowerCase())
+    );
+  }, [filter.query, sortedPosts]);
+console.log(posts);
+console.log(sortedAndSearchedPosts);
+
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
+    setModal(false);
   };
   // получаем пост из дочернего компонента
   const removePost = (post) => {
@@ -54,12 +59,24 @@ return sortedPosts.filter(post => post[filter.sort]?.toLowerCase().includes(filt
 
   return (
     <div className="App">
-      <MyModal>
-      <PostForm createCb={createPost} />
+      <MyButton
+        style={{ marginTop: 30 }}
+        onClick={() => {
+          setModal(true);
+        }}
+      >
+        Создать пост
+      </MyButton>
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm createCb={createPost} />
       </MyModal>
       <hr style={{ margin: "15px" }}></hr>
-      <PostFilter filter={filter} setFilter={setFilter}/>
-      <PostList removeCb={removePost} posts={sortedAndSearchedPosts} title="Список постов 1" />
+      <PostFilter filter={filter} setFilter={setFilter} />
+      <PostList
+        removeCb={removePost}
+        posts={sortedAndSearchedPosts.length ? sortedAndSearchedPosts : posts}
+        title="Список постов 1"
+      />
     </div>
   );
 }

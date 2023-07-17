@@ -9,19 +9,23 @@ import MyButton from "./components/UI/button/MyButton";
 import { usePosts } from "./hooks/usePosts";
 import PostService from "./hooks/API/PostService";
 import Loader from "./components/UI/loader/Loader";
+import { useFetching } from "./hooks/useFetching";
 
 function App() {
   // посты с сервера
   const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const [modal, setModal] = useState(false);
-  const [isPostsLoading, setPostsLoading] = useState(false)
+  const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+    const posts = await PostService.getAll();
+    setPosts(posts);
+  });
 
-useEffect(() => {
-fetchPosts();
-}, [])
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
-const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
+  const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
@@ -31,17 +35,6 @@ const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
   const removePost = (post) => {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
-
-async function fetchPosts() {
-  setPostsLoading(true);
-  setTimeout(async () => {
-    const posts= await PostService.getAll();
-    setPosts(posts);
-    setPostsLoading(false);
-  }, 1000)
-  
-}
-
 
   return (
     <div className="App">
@@ -60,14 +53,19 @@ async function fetchPosts() {
       <hr style={{ margin: "15px" }}></hr>
       <PostFilter filter={filter} setFilter={setFilter} />
 
-      {isPostsLoading
-      ? <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}><Loader/></div>
-      :  <PostList
-      removeCb={removePost}
-      posts={sortedAndSearchedPosts.length ? sortedAndSearchedPosts : posts}
-      title="Список постов 1"
-    />
-    }
+      {postError && <h1>Произошла ошибка {postError}</h1>}
+
+      {isPostsLoading ? (
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 50 }}>
+          <Loader />
+        </div>
+      ) : (
+        <PostList
+          removeCb={removePost}
+          posts={sortedAndSearchedPosts.length ? sortedAndSearchedPosts : posts}
+          title="Список постов 1"
+        />
+      )}
     </div>
   );
 }

@@ -4,8 +4,8 @@ import "./app.css";
 // import PostItem from "./components/PostItem";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
-import MySelect from "./components/UI/select/MySelect";
-import MyInput from "./components/UI/input/MyInput";
+// import MySelect from "./components/UI/select/MySelect";
+// import MyInput from "./components/UI/input/MyInput";
 import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/modal/MyModal";
 import MyButton from "./components/UI/button/MyButton";
@@ -26,23 +26,24 @@ function App() {
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const [modal, setModal] = useState(false);
 
-  // отсортированные посты
-  const sortedPosts = useMemo(() => {
-    console.log("Отработала");
-    if (filter.sort) {
-      return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]));
-    }
+  // // отсортированные посты - перенесли в хук
+  // const sortedPosts = useMemo(() => {
+  //   console.log("Отработала");
+  //   if (filter.sort) {
+  //     return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]));
+  //   }
 
-    return posts;
-  }, [filter.sort, posts]);
+  //   return posts;
+  // }, [filter.sort, posts]);
 
-  const sortedAndSearchedPosts = useMemo(() => {
-    return sortedPosts.filter((post) =>
-      post[filter.sort]?.toLowerCase().includes(filter.query.toLowerCase())
-    );
-  }, [filter.query, sortedPosts]);
-console.log(posts);
-console.log(sortedAndSearchedPosts);
+  // перенесли в хук
+//   const sortedAndSearchedPosts = useMemo(() => {
+//     return sortedPosts.filter((post) =>
+//       post[filter.sort]?.toLowerCase().includes(filter.query.toLowerCase())
+//     );
+//   }, [filter.query, sortedPosts]);
+// console.log(posts);
+// console.log(sortedAndSearchedPosts);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);

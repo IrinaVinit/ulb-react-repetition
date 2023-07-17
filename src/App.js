@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./app.css";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
@@ -7,15 +7,25 @@ import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/modal/MyModal";
 import MyButton from "./components/UI/button/MyButton";
 import { usePosts } from "./hooks/usePosts";
-import axios from "axios";
+import PostService from "./hooks/API/PostService";
 
 function App() {
   // посты с сервера
   const [posts, setPosts] = useState([]);
-
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const [modal, setModal] = useState(false);
 
+// useEffect(() => {
+  // fetchPosts()
+
+  // return () => {
+  //   очистка после размонтирования компонента
+  // }
+// }, [])
+useEffect(() => {
+// console.log('useEffect');
+fetchPosts();
+}, [])
 
 const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
 
@@ -29,9 +39,9 @@ const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
   };
 
 async function fetchPosts() {
-  const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
+  const posts= await PostService.getAll();
   // console.log(response);
-  setPosts(response.data)
+  setPosts(posts)
 }
 
 

@@ -1,50 +1,21 @@
 import React, { useMemo, useState } from "react";
-//import Counter from "./components/Counter";
 import "./app.css";
-// import PostItem from "./components/PostItem";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
-// import MySelect from "./components/UI/select/MySelect";
-// import MyInput from "./components/UI/input/MyInput";
+
 import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/modal/MyModal";
 import MyButton from "./components/UI/button/MyButton";
 import { usePosts } from "./hooks/usePosts";
+import axios from "axios";
 
 function App() {
   // посты с сервера
-  const [posts, setPosts] = useState([
-    { id: 1, title: "iii", body: "op" },
-    { id: 2, title: "hhh", body: "dwe" },
-    { id: 3, title: "rrr", body: "nh" },
-    { id: 4, title: "nnn", body: "drt" },
-  ]);
-  //   // выбранный способ сортировки постов
-  //   const [selectedSort, setSelectedSort] = useState("");
-  // // содержание поисковой строки
-  //   const [searchQuery, setSearchQuery] = useState("");
+  const [posts, setPosts] = useState([]);
 
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const [modal, setModal] = useState(false);
 
-  // // отсортированные посты - перенесли в хук
-  // const sortedPosts = useMemo(() => {
-  //   console.log("Отработала");
-  //   if (filter.sort) {
-  //     return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]));
-  //   }
-
-  //   return posts;
-  // }, [filter.sort, posts]);
-
-  // перенесли в хук
-//   const sortedAndSearchedPosts = useMemo(() => {
-//     return sortedPosts.filter((post) =>
-//       post[filter.sort]?.toLowerCase().includes(filter.query.toLowerCase())
-//     );
-//   }, [filter.query, sortedPosts]);
-// console.log(posts);
-// console.log(sortedAndSearchedPosts);
 
 const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
 
@@ -57,12 +28,16 @@ const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
     setPosts(posts.filter((p) => p.id !== post.id));
   };
 
-  // const sortPosts = (sortValue) => {
-  //   setSelectedSort(sortValue);
-  // };
+async function fetchPosts() {
+  const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
+  // console.log(response);
+  setPosts(response.data)
+}
+
 
   return (
     <div className="App">
+      <button onClick={fetchPosts}>Get posts</button>
       <MyButton
         style={{ marginTop: 30 }}
         onClick={() => {

@@ -14,16 +14,9 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const [modal, setModal] = useState(false);
+  const [isPostsLoading, setPostsLoading] = useState(false)
 
-// useEffect(() => {
-  // fetchPosts()
-
-  // return () => {
-  //   очистка после размонтирования компонента
-  // }
-// }, [])
 useEffect(() => {
-// console.log('useEffect');
 fetchPosts();
 }, [])
 
@@ -39,9 +32,13 @@ const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
   };
 
 async function fetchPosts() {
-  const posts= await PostService.getAll();
-  // console.log(response);
-  setPosts(posts)
+  setPostsLoading(true);
+  setTimeout(async () => {
+    const posts= await PostService.getAll();
+    setPosts(posts);
+    setPostsLoading(false);
+  }, 1000)
+  
 }
 
 
@@ -61,11 +58,16 @@ async function fetchPosts() {
       </MyModal>
       <hr style={{ margin: "15px" }}></hr>
       <PostFilter filter={filter} setFilter={setFilter} />
-      <PostList
-        removeCb={removePost}
-        posts={sortedAndSearchedPosts.length ? sortedAndSearchedPosts : posts}
-        title="Список постов 1"
-      />
+
+      {isPostsLoading
+      ? <h1>Идет загрузка...</h1>
+      :  <PostList
+      removeCb={removePost}
+      posts={sortedAndSearchedPosts.length ? sortedAndSearchedPosts : posts}
+      title="Список постов 1"
+    />
+    }
+      
     </div>
   );
 }

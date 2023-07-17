@@ -21,7 +21,5 @@ export const usePosts = (posts, sort, query) => {
           post[sort]?.toLowerCase().includes(query.toLowerCase())
         );
       }, [query, sortedPosts]);
-    console.log(posts);
-    console.log(sortedAndSearchedPosts);
     return sortedAndSearchedPosts;
 }

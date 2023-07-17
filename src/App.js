@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./app.css";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
@@ -8,6 +8,7 @@ import MyModal from "./components/UI/modal/MyModal";
 import MyButton from "./components/UI/button/MyButton";
 import { usePosts } from "./hooks/usePosts";
 import PostService from "./hooks/API/PostService";
+import Loader from "./components/UI/loader/Loader";
 
 function App() {
   // посты с сервера
@@ -60,14 +61,13 @@ async function fetchPosts() {
       <PostFilter filter={filter} setFilter={setFilter} />
 
       {isPostsLoading
-      ? <h1>Идет загрузка...</h1>
+      ? <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}><Loader/></div>
       :  <PostList
       removeCb={removePost}
       posts={sortedAndSearchedPosts.length ? sortedAndSearchedPosts : posts}
       title="Список постов 1"
     />
     }
-      
     </div>
   );
 }

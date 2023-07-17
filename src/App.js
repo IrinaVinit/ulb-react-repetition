@@ -9,6 +9,7 @@ import PostForm from "./components/PostForm";
 import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/modal/MyModal";
 import MyButton from "./components/UI/button/MyButton";
+import { usePosts } from "./hooks/usePosts";
 
 function App() {
   // посты с сервера
@@ -44,6 +45,8 @@ function App() {
 //   }, [filter.query, sortedPosts]);
 // console.log(posts);
 // console.log(sortedAndSearchedPosts);
+
+const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);

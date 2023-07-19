@@ -27,10 +27,11 @@ function App() {
     const totalCount = response.headers["x-total-count"];
     setTotalPages(getPagesCount(totalCount, limit));
   });
-  console.log(totalPages);
+  
+ 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [page]);
 
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
 
@@ -44,6 +45,11 @@ function App() {
   const removePost = (post) => {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
+
+const changePage = (page) => {
+setPage(page);
+// fetchPosts();
+}
 
   return (
     <div className="App">
@@ -78,7 +84,7 @@ function App() {
       <div className="page__wrapper">
         {pagesArray.map((p) => (
           <span 
-          onClick={()=> setPage(p)}
+          onClick={() => changePage(p)}
           key={p} 
           className={page===p ? 'page page__current' : 'page'}>{p}</span>
         ))}

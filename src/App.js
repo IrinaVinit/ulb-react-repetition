@@ -11,6 +11,7 @@ import PostService from "./components/API/PostService";
 import Loader from "./components/UI/loader/Loader";
 import { useFetching } from "./hooks/useFetching";
 import { getPagesArray, getPagesCount } from "./utils/pages";
+import Pagination from "./components/UI/pagination/Pagination";
 
 function App() {
   // посты с сервера
@@ -34,8 +35,6 @@ function App() {
   }, []);
 
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
-
-  let pagesArray = getPagesArray(totalPages);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
@@ -81,14 +80,7 @@ fetchPosts(limit, page);
           title="Список постов 1"
         />
       )}
-      <div className="page__wrapper">
-        {pagesArray.map((p) => (
-          <span 
-          onClick={() => changePage(p)}
-          key={p} 
-          className={page===p ? 'page page__current' : 'page'}>{p}</span>
-        ))}
-      </div>
+      <Pagination page={page} changePageCb={changePage} totalPages={totalPages}/>
     </div>
   );
 }

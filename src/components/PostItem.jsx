@@ -1,6 +1,6 @@
 import MyButton from "./UI/button/MyButton";
 
-function PostItem({ post, number, removeCb }) {
+function PostItem({ post, removeCb }) {
   return (
     <div className="post">
       <div className="post__content">

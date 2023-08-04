@@ -72,3 +72,7 @@
   .navbar__items {
     margin: left;
   }
+
+  .post__btns {
+    display: flex;
+  }

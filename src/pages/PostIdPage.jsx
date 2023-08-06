@@ -5,7 +5,7 @@ import PostService from "../components/API/PostService";
 import { useState } from "react";
 import Loader from "../components/UI/loader/Loader";
 
-export default function PostsIdPage() {
+export default function PostIdPage() {
   const params = useParams();
   const [post, setPost] = useState({});
   const [comments, setComments] = useState([]);

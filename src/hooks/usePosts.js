@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo} from "react";
 // кастомные пользовательские хуки - это хуки, которые внутри себя испльзуют стандартные реакт-хуки
 
 export const useSortedPosts = (posts, sort) => {

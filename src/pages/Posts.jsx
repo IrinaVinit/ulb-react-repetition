@@ -12,6 +12,7 @@ import { useFetching } from "../hooks/useFetching";
 import { getPagesArray, getPagesCount } from "../utils/pages";
 import Pagination from "../components/UI/pagination/Pagination";
 import { useObserver } from "../hooks/useObserver";
+import MySelect from '../components/UI/select/MySelect'
 
 const Posts = () => {
   //  посты с сервера
@@ -22,7 +23,6 @@ const Posts = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const lastElement = useRef();
-    
 
   const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit, page) => {
     const response = await PostService.getAll(limit, page);
@@ -31,7 +31,9 @@ const Posts = () => {
     setTotalPages(getPagesCount(totalCount, limit));
   });
 
-  useObserver(lastElement, page < totalPages, isPostsLoading, () => {setPage(page + 1)})
+  useObserver(lastElement, page < totalPages, isPostsLoading, () => {
+    setPage(page + 1);
+  });
 
   useEffect(() => {
     fetchPosts(limit, page);
@@ -50,7 +52,6 @@ const Posts = () => {
 
   const changePage = (page) => {
     setPage(page);
-   
   };
 
   return (
@@ -69,7 +70,17 @@ const Posts = () => {
       </MyModal>
       <hr style={{ margin: "15px" }}></hr>
       <PostFilter filter={filter} setFilter={setFilter} />
-
+      <MySelect
+        value={limit}
+        onChangeCb={(value) => setLimit(value)}
+        defaultValue="Количество элементов на странице"
+        options = {[
+          {value: 5, name: '5'},
+          {value: 10, name: '10'},
+          {value: 25, name: '25'},
+          {value: -1, name: 'all'},
+        ]}
+      ></MySelect>
       {postError && <h1>Произошла ошибка {postError}</h1>}
       <PostList
         removeCb={removePost}

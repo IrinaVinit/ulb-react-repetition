@@ -7,18 +7,17 @@ import { AuthContext } from "./context";
 
 export default function App() {
   const [isAuth, setIsAuth] = useState(false);
-const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
-
-useEffect(() => {
-if(localStorage.getItem('auth')) {
-  setIsAuth(true)
-}
-setIsLoading(false)
-}, [])
+  useEffect(() => {
+    if (localStorage.getItem("auth")) {
+      setIsAuth(true);
+    }
+    setIsLoading(false);
+  }, []);
 
   return (
-    <AuthContext.Provider value={{isAuth, setIsAuth, isLoading}}>
+    <AuthContext.Provider value={{ isAuth, setIsAuth, isLoading }}>
       <BrowserRouter>
         <Navbar />
         <AppRouter />
